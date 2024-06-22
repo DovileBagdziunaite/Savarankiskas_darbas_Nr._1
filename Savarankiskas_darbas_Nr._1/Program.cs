@@ -21,7 +21,7 @@ namespace Savarankiskas_darbas_Nr._1
             }
         }
 
-        static void ShowMenuBase()
+        static void ShowMenuLogo()
         {
             Console.WriteLine("");
             Console.WriteLine("---------------------------------------------------------------------");
@@ -70,7 +70,7 @@ namespace Savarankiskas_darbas_Nr._1
             else
             {
                 Console.Clear();
-                ShowMenuBase();
+                ShowMenuLogo();
                 Console.WriteLine("");
                 currentUser = new User(fullName);
                 users.Add(fullName, currentUser);
@@ -100,7 +100,7 @@ namespace Savarankiskas_darbas_Nr._1
             while (true)
             {
                 Console.Clear();
-                ShowMenuBase();
+                ShowMenuLogo();
                 Console.WriteLine($"Prisijunges vartotojas: {currentUser.Name}");
                 Console.WriteLine("");
                 ShowAndPrintMenu();
@@ -132,7 +132,7 @@ namespace Savarankiskas_darbas_Nr._1
                         return;
                     case "5":
                         Console.Clear();
-                        ShowMenuBase();
+                        ShowMenuLogo();
                         Console.WriteLine("Iki kitu susitikimu PROTMUSYJE!");
                         Console.WriteLine("Tikimes neprailgo laikas su mumis ir patyreti idomiu nuotykiu.");
                         Console.WriteLine($"Lauksime sugriztant taves, {currentUser.Name}.");
@@ -174,7 +174,7 @@ namespace Savarankiskas_darbas_Nr._1
         static void ShowRules()
         {
             Console.Clear();
-            ShowMenuBase();
+            ShowMenuLogo();
             Console.WriteLine($"Prisijunges vartotojas: {currentUser.Name}");
             Console.WriteLine("");
             Console.WriteLine("");
@@ -201,7 +201,7 @@ namespace Savarankiskas_darbas_Nr._1
         static void StartGame()
         {
             Console.Clear();
-            ShowMenuBase();
+            ShowMenuLogo();
             Console.WriteLine($"Prisijunges vartotojas: {currentUser.Name}");
             Console.WriteLine("");
             Console.WriteLine("");
@@ -229,7 +229,7 @@ namespace Savarankiskas_darbas_Nr._1
                 questions.Remove(question); 
 
                 Console.Clear();
-                ShowMenuBase();
+                ShowMenuLogo();
                 Console.WriteLine($"Prisijunges vartotojas: {currentUser.Name}");
                 Console.WriteLine("");
                 Console.WriteLine("");
@@ -263,11 +263,10 @@ namespace Savarankiskas_darbas_Nr._1
                 Console.WriteLine($"Siuo metu turite {score} tasku.");
                 WaitForEnter();
             }
-
             currentUser.Score = score;
 
             Console.Clear();
-            ShowMenuBase();
+            ShowMenuLogo();
             Console.WriteLine($"Prisijunges vartotojas: {currentUser.Name}");
             Console.WriteLine("");
             Console.WriteLine("");
@@ -279,7 +278,7 @@ namespace Savarankiskas_darbas_Nr._1
         static void ShowResults()
         {
             Console.Clear();
-            ShowMenuBase();
+            ShowMenuLogo();
             Console.WriteLine($"Prisijunges vartotojas: {currentUser.Name}");
             Console.WriteLine("");
             Console.WriteLine("");
@@ -302,7 +301,7 @@ namespace Savarankiskas_darbas_Nr._1
             else if (choice == "2")
             {
                 Console.Clear();
-                ShowMenuBase();
+                ShowMenuLogo();
                 Console.WriteLine($"Prisijunges vartotojas: {currentUser.Name}");
                 Console.WriteLine("");
                 Console.WriteLine("");
@@ -391,7 +390,7 @@ namespace Savarankiskas_darbas_Nr._1
         static void Logout()
         {
             Console.Clear();
-            ShowMenuBase();
+            ShowMenuLogo();
             Console.WriteLine("");
             Console.WriteLine("");
             currentUser = null;
