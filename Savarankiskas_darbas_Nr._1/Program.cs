@@ -220,13 +220,13 @@ namespace Savarankiskas_darbas_Nr._1
             List<Question> questions = GetQuestionsForCategory(categoryChoice);
 
             int score = 0;
-            int questionCount = 10;
+            int questionCount = 5;
             Random random = new Random();
 
             for (int i = 1; i <= questionCount; i++)
             {
                 Question question = questions[random.Next(questions.Count)];
-                questions.Remove(question); 
+                questions.Remove(question);
 
                 Console.Clear();
                 ShowMenuLogo();
@@ -398,8 +398,11 @@ namespace Savarankiskas_darbas_Nr._1
             Console.WriteLine("Tikimes neprailgo laikas su mumis ir patyreti idomiu nuotykiu.");
             Console.WriteLine("Lauksime sugriztant taves, mielas dalyvi.");
             Console.WriteLine("Pakviesk ir savo draugus.");
+            Console.WriteLine("");
             WaitForEnter();
             Console.Clear();
+            ShowLoginScreen();
+            ShowMenu();
         }
     }
 

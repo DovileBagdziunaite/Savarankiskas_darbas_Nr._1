@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.34902.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Savarankiskas_darbas_Nr._1", "Savarankiskas_darbas_Nr._1\Savarankiskas_darbas_Nr._1.csproj", "{ECB0E884-7142-4F8A-9373-0BE3FBBBEF90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Savarankiskas_darbas_Nr._1_Testas", "Savarankiskas_darbas_Nr._1_Testas\Savarankiskas_darbas_Nr._1_Testas.csproj", "{D161310A-7304-4468-960C-04762DB52E26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Savarankiskas_darbas_Nr._1_Testas", "Savarankiskas_darbas_Nr._1_Testas\Savarankiskas_darbas_Nr._1_Testas.csproj", "{D161310A-7304-4468-960C-04762DB52E26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
