@@ -5,8 +5,6 @@ VisualStudioVersion = 17.10.34902.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Savarankiskas_darbas_Nr._1", "Savarankiskas_darbas_Nr._1\Savarankiskas_darbas_Nr._1.csproj", "{ECB0E884-7142-4F8A-9373-0BE3FBBBEF90}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Savarankiskas_darbas_Nr._1_Testas", "Savarankiskas_darbas_Nr._1_Testas\Savarankiskas_darbas_Nr._1_Testas.csproj", "{D161310A-7304-4468-960C-04762DB52E26}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{ECB0E884-7142-4F8A-9373-0BE3FBBBEF90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECB0E884-7142-4F8A-9373-0BE3FBBBEF90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECB0E884-7142-4F8A-9373-0BE3FBBBEF90}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D161310A-7304-4468-960C-04762DB52E26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D161310A-7304-4468-960C-04762DB52E26}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D161310A-7304-4468-960C-04762DB52E26}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D161310A-7304-4468-960C-04762DB52E26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

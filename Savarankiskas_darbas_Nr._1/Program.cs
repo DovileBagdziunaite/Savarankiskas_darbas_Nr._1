@@ -4,10 +4,11 @@ using System.Linq;
 
 namespace Savarankiskas_darbas_Nr._1
 {
-    internal class Program
+    public class Program
     {
         static Dictionary<string, User> users = new Dictionary<string, User>();
         static User currentUser = null;
+        static string askedQuestions;
 
         static void Main(string[] args)
         {
@@ -198,6 +199,54 @@ namespace Savarankiskas_darbas_Nr._1
             return choice >= 'a' && choice < 'a' + numberOfOptions;
         }
 
+        static void HandlePostGameOptions(List<Question> askedQuestions)
+        {
+            Console.WriteLine("Paspauskite 'q', jei norite grizti i meniu, arba paspauskite 'pp', jei norite pasitikrinti, ar nebuvo pasikartojanciu klausimu.");
+            string userInput;
+            do
+            {
+                userInput = Console.ReadLine().ToLower().Trim();
+                if (userInput == "q")
+                {
+                    ShowMenu();
+                    return;
+                }
+                else if (userInput == "pp")
+                {
+                    CheckForDuplicateQuestions(askedQuestions);
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("Neteisinga ivestis. Paspauskite 'q' arba 'pp'.");
+                }
+            } while (true);
+        }
+
+        static void CheckForDuplicateQuestions(List<Question> askedQuestions)
+        {
+            var duplicateQuestions = askedQuestions.GroupBy(q => q.Text)
+                                                   .Where(g => g.Count() > 1)
+                                                   .Select(g => g.Key)
+                                                   .ToList();
+
+            if (duplicateQuestions.Any())
+            {
+                Console.WriteLine("Rasti pasikartojantys klausimai:");
+                foreach (var question in duplicateQuestions)
+                {
+                    Console.WriteLine($"- {question}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Pasikartojanciu klausimu nebuvo.");
+            }
+
+            Console.WriteLine("Paspauskite bet kuri klavisa, kad griztumete i meniu.");
+            Console.ReadKey();
+            ShowMenu();
+        }
         static void StartGame()
         {
             Console.Clear();
@@ -213,8 +262,17 @@ namespace Savarankiskas_darbas_Nr._1
             string categoryChoice;
             do
             {
-                Console.Write("Pasirinkite kategorija: ");
+                Console.Write("Pasirinkite kategorija (1, 2 arba 3) arba paspauskite 'q', jei norite grizti i MENIU langa: ");
                 categoryChoice = Console.ReadLine().Trim();
+                if (categoryChoice.ToLower() == "q")
+                {
+                    ShowMenu();
+                    return;
+                }
+                if (!IsValidCategoryChoice(categoryChoice))
+                {
+                    Console.WriteLine("Neteisinga ivestis, bandykite dar karta: pasirinkite viena is galimu variantu");
+                }
             } while (!IsValidCategoryChoice(categoryChoice));
 
             List<Question> questions = GetQuestionsForCategory(categoryChoice);
@@ -271,8 +329,9 @@ namespace Savarankiskas_darbas_Nr._1
             Console.WriteLine("");
             Console.WriteLine("");
             Console.WriteLine($"Zaidimas baigtas! Surinkote is viso: {score} tasku.");
-            CallButtonQ();
-            while (Console.ReadLine() != "q") { }
+            //CallButtonQ();
+            //while (Console.ReadLine() != "q") { }
+            HandlePostGameOptions(questions);
         }
 
         static void ShowResults()
