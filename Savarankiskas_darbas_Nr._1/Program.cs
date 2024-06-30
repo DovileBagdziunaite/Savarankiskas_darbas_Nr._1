@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Text.Json;
 
 namespace Savarankiskas_darbas_Nr._1
 {
@@ -8,20 +8,46 @@ namespace Savarankiskas_darbas_Nr._1
     {
         static Dictionary<string, User> users = new Dictionary<string, User>();
         static User currentUser = null;
-        static string askedQuestions;
+        static string dataFilePath = "usersData.json";
 
         static void Main(string[] args)
         {
+            LoadUserData();
             while (true)
             {
                 ShowLoginScreen();
-                if (currentUser != null)
                 {
                     ShowMenu();
                 }
             }
         }
+        #region  // 1   vartotojo duomenu ikelimas is failo
+        static void LoadUserData()
+        {
+            // tikrina ar nurodytas failas, kintamasis dataFilePath egzistuoja
+            if (File.Exists(dataFilePath))
+            {
+                // Nuskaito visa failo turini kaip teksta ir priskiria ji kintamajam 'json'
+                string json = File.ReadAllText(dataFilePath);
+                // Naudoja JsonSerializer, kad deserializuotu JSON teksta i Dictionary<string, User> objekta
+                // Jei deserializacija grazina null (tai gali atsitikti, jei failas yra tuscias ar neatitinka formato), sukuriamas naujas tuscias Dictionary<string, User>.
+                users = JsonSerializer.Deserialize<Dictionary<string, User>>(json) ?? new Dictionary<string, User>();
+            }
+        }
+        #endregion
 
+        #region  // 2   vartotoju duomenu issaugojimas i faila 
+        static void SaveUserData()
+        {
+            // Naudoja JsonSerializer, kad serializuotu users objekta (kuris yra Dictionary<string, User>) i JSON formato eilute
+            string json = JsonSerializer.Serialize(users);
+            // Raso JSON formato eilute i faila, nurodyta dataFilePath kintamajame. Jei failas jau egzistuoja,
+            // jo turinys bus perrasytas; jei failas neegzistuoja, jis bus sukurtas.
+            File.WriteAllText(dataFilePath, json);
+        }
+        #endregion
+
+        #region  // 3   menu logotipas PROTMUSIS
         static void ShowMenuLogo()
         {
             Console.WriteLine("");
@@ -35,7 +61,9 @@ namespace Savarankiskas_darbas_Nr._1
             Console.WriteLine("---------------------------------------------------------------------");
             Console.WriteLine("");
         }
+        #endregion
 
+        #region  // 4   pasisveikinimas pirma karta prisijungus
         static void ShowAndPrintMenu()
         {
             Console.WriteLine("Sveikinu prisijungus prie protmusio zaidimo.");
@@ -43,7 +71,9 @@ namespace Savarankiskas_darbas_Nr._1
             Console.WriteLine("ir isbandyti savo jegas.");
             Console.WriteLine("");
         }
+        #endregion
 
+        #region  // 5   prisijungimas
         static void ShowLoginScreen()
         {
             Console.WriteLine("Sveiki! Prasome prisijungti, noredami uzeiti i pagrindini puslapi.");
@@ -53,7 +83,10 @@ namespace Savarankiskas_darbas_Nr._1
             {
                 Console.Write("Iveskite savo varda: ");
                 firstName = Console.ReadLine().ToUpper().Trim();
-            } while (string.IsNullOrWhiteSpace(firstName) || ContainsInvalidCharacters(firstName));
+            }
+            // Nurodo, kad ciklas turi buti kartojamas tol, kol firstName yra tuscias arba sudarytas tik is tarpeliu
+            // (string.IsNullOrWhiteSpace(firstName)) arba jame yra netinkamu simboliu (ContainsInvalidCharacters(firstName)).
+            while (string.IsNullOrWhiteSpace(firstName) || ContainsInvalidCharacters(firstName));
 
             string lastName;
             do
@@ -79,11 +112,17 @@ namespace Savarankiskas_darbas_Nr._1
                 Console.WriteLine($"Sekmingai prisijungete ir susikurete nauja paskyra, {fullName}.");
             }
 
+            SaveUserData();
             WaitForEnter();
         }
+        #endregion
 
+        #region  // 6   tikrina, ar eiluteje yra tam tikru netinkamu simboliu
         static bool ContainsInvalidCharacters(string input)
         {
+            // char[] invalidChars: Deklaruoja char tipo masyva, kuriame saugomi netinkami simboliai
+            // { ' ', '"', '\'', ',', '.', '-' }: Inicializuoja masyva su netinkamais simboliais: tarpas,
+            // dviguba kabute, vienguba kabute, kablelis, taskas ir brukšnelis
             char[] invalidChars = { ' ', '"', '\'', ',', '.', '-' };
             foreach (char c in invalidChars)
             {
@@ -95,7 +134,9 @@ namespace Savarankiskas_darbas_Nr._1
             }
             return false;
         }
+        #endregion
 
+        #region  // 7   pagrindinis MENIU langas
         static void ShowMenu()
         {
             while (true)
@@ -138,6 +179,7 @@ namespace Savarankiskas_darbas_Nr._1
                         Console.WriteLine("Tikimes neprailgo laikas su mumis ir patyreti idomiu nuotykiu.");
                         Console.WriteLine($"Lauksime sugriztant taves, {currentUser.Name}.");
                         Console.WriteLine("Pakviesk ir savo draugus.");
+                        SaveUserData();
                         Environment.Exit(0);
                         break;
                     default:
@@ -146,7 +188,9 @@ namespace Savarankiskas_darbas_Nr._1
                 }
             }
         }
+        #endregion
 
+        #region  // 8   isveda pranesima, skatinanti vartotoja paspausti q, jei nori grizti į meniu
         static void CallButtonQ()
         {
             Console.WriteLine("");
@@ -157,10 +201,13 @@ namespace Savarankiskas_darbas_Nr._1
             {
                 ShowMenu();
             }
+            // atstato konsoles teksto spalva i pradine
             Console.ResetColor();
             Console.WriteLine("");
         }
+        #endregion
 
+        #region  // 9   isveda pranesima, skatinanti vartotoja paspausti enter, jei nori testi veiksma
         static void WaitForEnter()
         {
             string input;
@@ -171,7 +218,9 @@ namespace Savarankiskas_darbas_Nr._1
                 input = Console.ReadLine().ToLower().Trim();
             } while (input != "enter");
         }
+        #endregion
 
+        #region  // 10   taisykliu atvaizdavimas
         static void ShowRules()
         {
             Console.Clear();
@@ -186,43 +235,58 @@ namespace Savarankiskas_darbas_Nr._1
             CallButtonQ();
             while (Console.ReadLine() != "q") { }
         }
+        #endregion
 
+        #region  // 11   tikrina ar vartotojas tinkamai iveda CATEGORIES, t.y. 1, 2 ar 3
         static bool IsValidCategoryChoice(string input)
         {
             return input == "1" || input == "2" || input == "3";
         }
+        #endregion
 
+        #region  // 12   tikrina, ar vartotojo ivestas simbolis yra galiojantis pasirinkimas tarp tam tikro skaičiaus pasirinkimų, pradedant nuo 'a'
         static bool IsValidAnswerChoice(string input, int numberOfOptions)
         {
+            // tikrina, ar ivesties ilgis yra lygus 1. Jei ne, grazina false
             if (input.Length != 1) return false;
+            // isgauna pirmaji simboli
             char choice = input[0];
+            // tikrina, ar simbolis yra tarp 'a' ir 'a' plius galimu pasirinkimu skaicius:
+            // choice >= 'a': tikrina, ar simbolis yra didesnis arba lygus 'a'
+            // choice < 'a' + numberOfOptions: tikrina, ar simbolis yra mazesnis uz 'a' plius galimu pasirinkimu skaicius
             return choice >= 'a' && choice < 'a' + numberOfOptions;
         }
+        #endregion
 
+        #region  // 13   pateikia vartotojui parinktis po zaidimo: grizti i meniu arba patikrinti, ar nebuvo pasikartojanciu klausimu
         static void HandlePostGameOptions(List<Question> askedQuestions)
         {
-            Console.WriteLine("Paspauskite 'q', jei norite grizti i meniu, arba paspauskite 'pp', jei norite pasitikrinti, ar nebuvo pasikartojanciu klausimu.");
+            Console.WriteLine("Paspauskite 'q', jei norite grizti i meniu, arba paspauskite 'dd', jei norite pasitikrinti, ar nebuvo pasikartojanciu klausimu.");
             string userInput;
             do
             {
                 userInput = Console.ReadLine().ToLower().Trim();
+                // jei ivestis yra "q", kvieciamas metodas ShowMenu ir grazinama i pagrindini puslapi
                 if (userInput == "q")
                 {
                     ShowMenu();
                     return;
                 }
-                else if (userInput == "pp")
+                // jei ivestis yra "dd", kvieciami metodai CheckForDuplicateQuestions su askedQuestions ir grazina i pagrindini puslapi
+                else if (userInput == "dd")
                 {
                     CheckForDuplicateQuestions(askedQuestions);
                     return;
                 }
                 else
                 {
-                    Console.WriteLine("Neteisinga ivestis. Paspauskite 'q' arba 'pp'.");
+                    Console.WriteLine("Neteisinga ivestis. Paspauskite 'q' arba 'dd'.");
                 }
             } while (true);
         }
+        #endregion
 
+        #region  // 14   tikrinama, ar sarase askedQuestions yra pasikartojanciu klausimu, ir pateikia rezultatus vartotojui
         static void CheckForDuplicateQuestions(List<Question> askedQuestions)
         {
             var duplicateQuestions = askedQuestions.GroupBy(q => q.Text)
@@ -247,6 +311,9 @@ namespace Savarankiskas_darbas_Nr._1
             Console.ReadKey();
             ShowMenu();
         }
+        #endregion
+
+        #region  // 15   zaidimo eiga
         static void StartGame()
         {
             Console.Clear();
@@ -275,10 +342,13 @@ namespace Savarankiskas_darbas_Nr._1
                 }
             } while (!IsValidCategoryChoice(categoryChoice));
 
+            // klausimu gavimas pagal kategorija
             List<Question> questions = GetQuestionsForCategory(categoryChoice);
 
+
+            // zaidimo klausimai ir atsakymu apdorojimas
             int score = 0;
-            int questionCount = 5;
+            int questionCount = 7;           // zaidejams uzdaduodamu klausimu kiekis 
             Random random = new Random();
 
             for (int i = 1; i <= questionCount; i++)
@@ -331,9 +401,12 @@ namespace Savarankiskas_darbas_Nr._1
             Console.WriteLine($"Zaidimas baigtas! Surinkote is viso: {score} tasku.");
             //CallButtonQ();
             //while (Console.ReadLine() != "q") { }
+            SaveUserData();
             HandlePostGameOptions(questions);
         }
+        #endregion
 
+        #region  // 16   dalyviai ir rezultatai
         static void ShowResults()
         {
             Console.Clear();
@@ -341,49 +414,87 @@ namespace Savarankiskas_darbas_Nr._1
             Console.WriteLine($"Prisijunges vartotojas: {currentUser.Name}");
             Console.WriteLine("");
             Console.WriteLine("");
-            Console.WriteLine("Zaidimo rezultatu ir dalyviu perziura:");
+            Console.WriteLine("Pasirinkite, ka norite pamatyti:");
+            Console.WriteLine("1. Dalyviai");
+            Console.WriteLine("2. Rezultatai");
+            Console.Write("Jusu pasirinkimas yra: ");
 
-            Console.WriteLine("1. Perziureti dalyvius");
-            Console.WriteLine("2. Perziureti rezultatus");
-            Console.Write("Jusu pasirinkimas: ");
             string choice = Console.ReadLine();
 
             if (choice == "1")
             {
-                Console.Clear();
-                Console.WriteLine("Dalyviai:");
-                foreach (var user in users.Values)
-                {
-                    Console.WriteLine(user.Name);
-                }
+                ShowParticipants();
             }
             else if (choice == "2")
             {
-                Console.Clear();
-                ShowMenuLogo();
-                Console.WriteLine($"Prisijunges vartotojas: {currentUser.Name}");
-                Console.WriteLine("");
-                Console.WriteLine("");
-                Console.WriteLine("Rezultatai:");
-                var sortedUsers = new List<User>(users.Values);
-                sortedUsers.Sort((u1, u2) => u2.Score.CompareTo(u1.Score));
-                int rank = 1;
-                foreach (var user in sortedUsers)
-                {
-                    string stars = rank <= 3 ? new string('*', rank) : "";
-                    Console.WriteLine($"{rank}. {user.Name} - {user.Score} {stars}");
-                    rank++;
-                }
+                ShowScores();
             }
             else
             {
-                Console.WriteLine("Neteisingas pasirinkimas. Griztama i meniu.");
+                Console.WriteLine("Neteisingas pasirinkimas. Bandykite dar karta.");
+                WaitForEnter();
+                ShowResults();
+            }
+        }
+        #endregion
+
+        #region  // 17   rodomi visi dalyviai (vartotojai), kurie yra uzregistruoti programoje
+        static void ShowParticipants()
+        {
+            Console.Clear();
+            ShowMenuLogo();
+            Console.WriteLine($"Prisijunges vartotojas: {currentUser.Name}");
+            Console.WriteLine("");
+            Console.WriteLine("Dalyviai:");
+
+            // vartotoju saraso rodymas:
+            foreach (var user in users.Keys)
+            {
+                Console.WriteLine(user);
             }
 
             CallButtonQ();
-            while (Console.ReadLine() != "q") { }
         }
+        #endregion
 
+        #region  // 18   vartotojų rezultatu lentele
+        static void ShowScores()
+        {
+            Console.Clear();
+            ShowMenuLogo();
+            Console.WriteLine($"Prisijunges vartotojas: {currentUser.Name}");
+            Console.WriteLine("");
+            Console.WriteLine("Rezultatai:");
+
+            // rezultatu lentele surusiuojama pagal taskus mazejancia tvarka, kad auksciausi rezultatai butu virsuje
+            var sortedUsers = users.Values.OrderByDescending(u => u.Score).ToList();
+
+            // vartotojai isvedami su ju uzimama vieta lenteleje ir taskais
+            int rank = 1;
+            for (int i = 0; i < sortedUsers.Count; i++)
+            {
+                if (i > 0 && sortedUsers[i].Score != sortedUsers[i - 1].Score)
+                {
+                    rank = i + 1;
+                }
+
+                if (rank <= 10)
+                {
+                    string star = rank <= 3 ? new string('*', rank) : "";
+                    Console.WriteLine($"{rank}. {sortedUsers[i].Name} - {sortedUsers[i].Score} taskai {star}");
+                }
+                else
+                {
+                    Console.WriteLine($"{sortedUsers[i].Name}");
+                }
+            }
+
+            // griztama i meniu puslapi
+            CallButtonQ();
+        }
+        #endregion
+
+        #region  // 19   kausimai pagal kategorijas
         static List<Question> GetQuestionsForCategory(string categoryChoice)
         {
             List<Question> questions = new List<Question>();
@@ -404,7 +515,7 @@ namespace Savarankiskas_darbas_Nr._1
                 questions.Add(new Question("Kiek bus 7 + 8?", new string[] { "15", "78", "14", "16" }, "a", 10));
                 questions.Add(new Question("Kas yra skaičiaus kvadratas?", new string[] { "skaičiaus sandauga iš jo paties", "menamojo skaičiaus kvadratas yra visada yra mažesnis už nulį", "nelyginių skaičių suma eilės tvarka sudaro tobulą lyginio arba nelyginio skaičiaus kvadratą", "antrojo laipsnio daugianarė lygtis" }, "a", 10));
                 questions.Add(new Question("Kas yra kvadratinė šaknis?", new string[] { "skaičius, kurį padauginus iš savęs gaunamas x.;", "skaičiaus sandauga iš jo paties", "dauginys padaugintas is dauginio", "antrojo laipsnio daugianarė lygtis" }, "a", 10));
-                questions.Add(new Question("15.\tKiek bus 2 * 2?", new string[] { "5", "4", "22", "12" }, "b", 10));
+                questions.Add(new Question("Kiek bus 2 * 2?", new string[] { "5", "4", "22", "12" }, "b", 10));
             }
             else if (categoryChoice == "2")
             {
@@ -445,7 +556,9 @@ namespace Savarankiskas_darbas_Nr._1
 
             return questions;
         }
+        #endregion
 
+        #region  // 20   atsijungimas
         static void Logout()
         {
             Console.Clear();
@@ -463,11 +576,14 @@ namespace Savarankiskas_darbas_Nr._1
             ShowLoginScreen();
             ShowMenu();
         }
+        #endregion
     }
 
-    class User
+    #region  // 21   User klase
+    public class User : IComparable<User>
     {
-        public string Name { get; }
+        // reprezentuoja vartotoja su vardu ir taskais
+        public string Name { get; private set; }
         public int Score { get; set; }
 
         public User(string name)
@@ -475,10 +591,20 @@ namespace Savarankiskas_darbas_Nr._1
             Name = name;
             Score = 0;
         }
-    }
 
+        // leidzia palyginti vartotojus pagal ju taskus
+        public int CompareTo(User other)
+        {
+            if (other == null) return 1;
+            return other.Score.CompareTo(this.Score);
+        }
+    }
+    #endregion
+
+    #region  // 22   Question klase
     class Question
     {
+        // reprezentuoja klausima su galimais atsakymais, teisingu atsakymu ir tasku kiekiu, kuri galima gauti uz teisinga atsakyma
         public string Text { get; }
         public string[] Options { get; }
         public string CorrectOption { get; }
@@ -492,4 +618,5 @@ namespace Savarankiskas_darbas_Nr._1
             Score = score;
         }
     }
+    #endregion
 }
